@@ -10,7 +10,7 @@ import pyqtgraph as pg
 import pandas as pd
 
 import numpy as np
-import tushare as ts
+#import tushare as ts
 import datetime
 from matplotlib.pylab import date2num
 """
@@ -129,7 +129,8 @@ class MainWindow(object):
     def chart(self,date_list, data_list):
         item = CandlestickItem(data_list)
         axis = DateAxis(date_strings=date_list, orientation='bottom')
-        plt = pg.PlotWidget(axisItems={'bottom': axis})
+        plt = pg.PlotWidget()
+        plt.axisItems = {'bottom':axis}
         plt.addItem(item, )
         plt.showGrid(x=True, y=True)
         return plt
