@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from PyQt5.QtWidgets import *
+from KViewer_new import KViewer
 
 class KViewerMainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -29,12 +30,16 @@ class KViewerMainWindow(QMainWindow):
         #tb.actionTriggered[QAction].connect(self.add_tab)
 
     def new_tab(self):
+        '''
         tab1 = QWidget()
         layout = QFormLayout()
         layout.addRow("name",QLineEdit())
         layout.addRow("address",QLineEdit())
         tab1.setLayout(layout)
         return tab1
+        '''
+        kv = KViewer()
+        return kv
 
     def add_tab(self,):
         print ('1')

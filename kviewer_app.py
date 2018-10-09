@@ -68,7 +68,7 @@ class MainWindow(object):
         # 加入竖线
         self.vLine = pg.InfiniteLine(angle=90, movable=False)
         self.plt1.addItem(self.vLine, ignoreBounds=True)
-        self.vb = self.plt1.viewRect()
+        # self.vb = self.plt1.viewRect()
 
         # 下面第2个图的范围设置框
         self.region = pg.LinearRegionItem()

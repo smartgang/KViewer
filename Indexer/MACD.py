@@ -32,7 +32,6 @@ class MACD(IndexerBase):
     def draw_indexer(self):
         i = 0
         for indexer_name, values in self.indexer_value_dic.items():
-            print (indexer_name)
             self.plt_dic[indexer_name] = self.plt.plot(name=indexer_name, pen=self.color_list[i])
             self.plt_dic[indexer_name].setData(values)
             print (indexer_name)

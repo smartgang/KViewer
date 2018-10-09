@@ -14,7 +14,9 @@ class MA(IndexerBase):
     }
 
     def __init__(self, raw_data, plt):
+        self.indexer_name_list = []
         for para_name, value in self.default_para_dic.items():
+            print ('MA', value)
             self.indexer_name_list.append("MA%d"%value)
         super(MA,self).__init__(raw_data, plt)
 

@@ -20,7 +20,7 @@ class ChildGraph(QWidget):
         self.indexer_dic = {}
 
     def set_raw_data(self, raw_data):
-        self.raw_data = pd.read_csv('RB1810_2018-06-19_1m.csv')
+        self.raw_data = raw_data
         if not self.child:
             item = CandlestickItem(self.raw_data)
             date_list = self.raw_data['Unnamed: 0'].tolist()
@@ -51,6 +51,7 @@ class ChildGraph(QWidget):
         self.demo1.show()
 
     def indexer_parameter_changed(self, selected_indexer, para_dic):
+        print ('indexer changed')
         if selected_indexer in self.indexer_dic.keys():
             indexer_class = self.indexer_dic[selected_indexer]
             indexer_class.update_parameter(para_dic[selected_indexer])
@@ -60,8 +61,12 @@ class ChildGraph(QWidget):
             indexer_class.calculate_indexer_valuer()
             indexer_class.draw_indexer()
             self.indexer_dic[selected_indexer] = indexer_class
+        print ('get_indexer_value_text')
+        print ('indexer_class', indexer_class)
         value_str = indexer_class.get_indexer_value_text(200)
+        print ('update_visual_range')
         self.update_visual_range(200, 400)
+        print ('set_indexer_label')
         self.set_indexer_label(value_str)
 
     def update_visual_range(self,start_pos, end_pos):
