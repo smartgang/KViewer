@@ -28,6 +28,8 @@ class ChildGraph(QWidget):
             self.plt = pg.PlotWidget(axisItems = {'bottom': axis})
             self.plt.addItem(item, )
             self.plt.showGrid(x=True, y=True)
+            #self.plt.enableMouse()
+            self.proxy = pg.SignalProxy(self.plt.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
         else:
             self.plt = pg.PlotWidget()
             self.plt.showGrid(x=True, y=True)
@@ -86,6 +88,14 @@ class ChildGraph(QWidget):
                 maxY = max(maxY, indexer_max_value)
             self.plt.setYRange(minY, maxY)
         self.plt.setXRange(start_pos, end_pos, padding=0)
+
+    def mouseMoved(self, pos):
+        vb = self.plt.viewRange()
+        print ('pos', pos)
+        print ('view rect', vb)
+        #print ('range', self.plt.range)
+        #print ('scene bouding rect', self.plt.sceneBoundingRect())
+        #print ('boudning rect', self.plt.boundingRect())
 
 class DateAxis(pg.AxisItem):
 

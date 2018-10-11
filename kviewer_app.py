@@ -13,7 +13,7 @@ import numpy as np
 #import tushare as ts
 import datetime
 from matplotlib.pylab import date2num
-import DATA_CONSTANTS as DC
+#import DATA_CONSTANTS as DC
 
 """
     'b': QtGui.QColor(0,0,255,255),
@@ -41,8 +41,8 @@ class MainWindow(object):
         self.ma_plot_dic = {}
         # 准备数据
 
-        #hist_data = pd.read_csv('RB1810_2018-06-19_1m.csv')
-        hist_data = DC.getBarBySymbol('SHFE.RB', 'RB1805', 3600)
+        hist_data = pd.read_excel('RB1810_2018-06-19_1m.xlsx')
+        #hist_data = DC.getBarBySymbol('SHFE.RB', 'RB1805', 3600)
         self.t = range(hist_data.shape[0])
         self.date_list = hist_data['strtime'].tolist()
         self.open = hist_data.open.tolist()
