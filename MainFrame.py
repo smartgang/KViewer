@@ -3,6 +3,7 @@ import sys
 from PyQt5.QtWidgets import *
 from KViewer_new import KViewer
 
+
 class KViewerMainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(KViewerMainWindow, self).__init__(parent)
@@ -53,7 +54,7 @@ class KViewerMainWindow(QMainWindow):
         print ("current index:%d" % i)
         print ("tab_num:%d" % self.tab_num)
         self.tab_widget.removeTab(i)
-        self.tab_num -=1
+        self.tab_num -= 1
 
 
 if __name__ == "__main__":

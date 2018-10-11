@@ -12,9 +12,10 @@ class MACD(IndexerBase):
     }
 
     def __init__(self, raw_data, plt):
-        super(MACD,self).__init__(raw_data, plt)
+        super(MACD, self).__init__(raw_data, plt)
+        self.indexer_name_list = ['DIF', 'DEA', 'HIST']  # MA的指标名和参数名都跟参数有关，所以要随参数进行设置
 
-    def calculate_indexer_valuer(self):
+    def calculate_indexer_value(self):
         closedata = self.raw_data['close']
         short = self.para_dic['Short']
         long1 = self.para_dic['Long']

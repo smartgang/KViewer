@@ -23,13 +23,14 @@ class ChildGraph(QWidget):
         self.raw_data = raw_data
         if not self.child:
             item = CandlestickItem(self.raw_data)
-            date_list = self.raw_data['Unnamed: 0'].tolist()
+            date_list = self.raw_data['strtime'].tolist()
             axis = DateAxis(date_strings=date_list, orientation='bottom')
             self.plt = pg.PlotWidget(axisItems = {'bottom': axis})
             self.plt.addItem(item, )
             self.plt.showGrid(x=True, y=True)
         else:
             self.plt = pg.PlotWidget()
+            self.plt.showGrid(x=True, y=True)
         self.frame_layout.addWidget(self.plt)
 
     def header_layout(self):
@@ -46,6 +47,9 @@ class ChildGraph(QWidget):
 
     def set_indexer_parameter(self):
         all_indexer_para_dic = get_all_indexer_para_dic()
+        if self.indexer_dic:
+            for indexer_name, indexer_class in self.indexer_dic.items():
+                all_indexer_para_dic[indexer_name] = indexer_class.get_para_dic()
         self.demo1 = IndexerWidget(all_indexer_para_dic)
         self.demo1.signal_para_changed.connect(self.indexer_parameter_changed)
         self.demo1.show()
@@ -58,7 +62,7 @@ class ChildGraph(QWidget):
         else:
             indexer_class = indexer_mapping_dic[selected_indexer](self.raw_data,self.plt)
             indexer_class.set_para_dic(para_dic[selected_indexer])
-            indexer_class.calculate_indexer_valuer()
+            indexer_class.calculate_indexer_value()
             indexer_class.draw_indexer()
             self.indexer_dic[selected_indexer] = indexer_class
         print ('get_indexer_value_text')

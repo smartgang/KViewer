@@ -12,7 +12,9 @@ class IndexerBase(object):
 
     def __init__(self, raw_data, plt):
         self.raw_data = raw_data
-        self.para_dic = self.default_para_dic
+        self.para_dic = {}
+        for para_name, value in self.default_para_dic.items():
+            self.para_dic[para_name] = value
         self.indexer_value_dic = {}
         self.plt = plt
         self.plt_dic = {}
@@ -36,6 +38,9 @@ class IndexerBase(object):
         for para_name in self.para_dic.keys():
             self.para_dic[para_name] = para_dic[para_name]
 
+    def get_para_dic(self):
+        return self.para_dic
+
     def update_raw_data(self,raw_data):
         self.raw_data = raw_data
         self.calculate_indexer_value()
@@ -43,11 +48,16 @@ class IndexerBase(object):
 
     def update_parameter(self, para_dic):
         changed = False
+        print ('default_para_dic', self.default_para_dic)
+        print ('para_dic', para_dic)
+        print ('self.para_dic', self.para_dic)
         for para_name in self.default_para_dic.keys():
             if self.para_dic[para_name] != para_dic[para_name]:
                 self.para_dic[para_name] = para_dic[para_name]
                 changed = True
         if changed:
+            print ('changed')
+            print ('self.para_dic', self.para_dic)
             self.calculate_indexer_value()
             self.re_draw_indexer()
 
