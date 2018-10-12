@@ -48,27 +48,19 @@ class IndexerBase(object):
 
     def update_parameter(self, para_dic):
         changed = False
-        print ('default_para_dic', self.default_para_dic)
-        print ('para_dic', para_dic)
-        print ('self.para_dic', self.para_dic)
         for para_name in self.default_para_dic.keys():
             if self.para_dic[para_name] != para_dic[para_name]:
                 self.para_dic[para_name] = para_dic[para_name]
                 changed = True
         if changed:
-            print ('changed')
-            print ('self.para_dic', self.para_dic)
             self.calculate_indexer_value()
             self.re_draw_indexer()
 
     def get_indexer_value_text(self, pos):
         # 根据传入的位置返回一个指标值的字符串
-        print ('getting indexer_value_text')
         t = ""
         i = 0
-        print ('indexer_name_list', self.indexer_name_list)
         for indexer_name in self.indexer_name_list:
-            print (indexer_name,self.indexer_value_dic[indexer_name][pos])
             c = self.color_list[i]
             t += "<span style='color: %s'>%s=%0.3f </span>" % (c, indexer_name, self.indexer_value_dic[indexer_name][pos])
             i += 1

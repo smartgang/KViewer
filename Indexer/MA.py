@@ -16,7 +16,6 @@ class MA(IndexerBase):
     def __init__(self, raw_data, plt):
         self.indexer_name_list = []
         for para_name, value in self.default_para_dic.items():
-            print ('MA', value)
             self.indexer_name_list.append("MA%d"%value)
         super(MA,self).__init__(raw_data, plt)
 
@@ -29,7 +28,6 @@ class MA(IndexerBase):
             indexer_name = "MA%d" % para_value
             self.indexer_name_list.append(indexer_name)
             self.indexer_value_dic[indexer_name] = self.raw_data['close'].rolling(para_value).mean().tolist()
-            print ('self.indexer_value_dic.keys', self.indexer_value_dic.keys())
 
     def draw_indexer(self):
         i = 0

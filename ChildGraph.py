@@ -12,12 +12,16 @@ class ChildGraph(QWidget):
     def __init__(self, child=True):
         super(ChildGraph, self).__init__()
         self.child = child
-
         self.frame_layout = QVBoxLayout(self)
+        self.para_setting_btn = QPushButton("参数设置")
+        self.para_setting_btn.setFixedWidth(100)
+        self.indexer_label = QLabel(self)
+        self.vLine = pg.InfiniteLine(angle=90, movable=False)
         self.frame_layout.addLayout(self.header_layout())
         self.raw_data = None
         self.plt = None
         self.indexer_dic = {}
+        self.indexer_widget = None
 
     def set_raw_data(self, raw_data):
         self.raw_data = raw_data
@@ -29,35 +33,36 @@ class ChildGraph(QWidget):
             self.plt.addItem(item, )
             self.plt.showGrid(x=True, y=True)
             #self.plt.enableMouse()
-            self.proxy = pg.SignalProxy(self.plt.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
         else:
             self.plt = pg.PlotWidget()
             self.plt.showGrid(x=True, y=True)
+        self.plt.addItem(self.vLine)
         self.frame_layout.addWidget(self.plt)
 
     def header_layout(self):
         hbox = QHBoxLayout(self)
-        self.indexer_label = QLabel(self)
-        self.para_setting_btn = QPushButton("参数设置")
         self.para_setting_btn.clicked.connect(self.set_indexer_parameter)
         hbox.addWidget(self.indexer_label)
         hbox.addWidget(self.para_setting_btn)
         return hbox
 
-    def set_indexer_label(self,value_str):
+    def set_indexer_label(self, xpos):
+        value_str = ''
+        for indexer_class in self.indexer_dic.values():
+            value_str += indexer_class.get_indexer_value_text(xpos)
         self.indexer_label.setText(value_str)
+        self.vLine.setPos(xpos)
 
     def set_indexer_parameter(self):
         all_indexer_para_dic = get_all_indexer_para_dic()
         if self.indexer_dic:
             for indexer_name, indexer_class in self.indexer_dic.items():
                 all_indexer_para_dic[indexer_name] = indexer_class.get_para_dic()
-        self.demo1 = IndexerWidget(all_indexer_para_dic)
-        self.demo1.signal_para_changed.connect(self.indexer_parameter_changed)
-        self.demo1.show()
+        self.indexer_widget = IndexerWidget(all_indexer_para_dic)
+        self.indexer_widget.signal_para_changed.connect(self.indexer_parameter_changed)
+        self.indexer_widget.show()
 
     def indexer_parameter_changed(self, selected_indexer, para_dic):
-        print ('indexer changed')
         if selected_indexer in self.indexer_dic.keys():
             indexer_class = self.indexer_dic[selected_indexer]
             indexer_class.update_parameter(para_dic[selected_indexer])
@@ -67,19 +72,14 @@ class ChildGraph(QWidget):
             indexer_class.calculate_indexer_value()
             indexer_class.draw_indexer()
             self.indexer_dic[selected_indexer] = indexer_class
-        print ('get_indexer_value_text')
-        print ('indexer_class', indexer_class)
-        value_str = indexer_class.get_indexer_value_text(200)
-        print ('update_visual_range')
         self.update_visual_range(200, 400)
-        print ('set_indexer_label')
-        self.set_indexer_label(value_str)
+        self.set_indexer_label(200)
 
     def update_visual_range(self,start_pos, end_pos):
         # Y轴自适应
         start_pos = max(0,start_pos)
         end_pos = max(1, end_pos)
-        minY = 9999
+        minY = 999999
         maxY = 0
         if self.indexer_dic:
             for indexer_class in self.indexer_dic.values():
@@ -89,20 +89,13 @@ class ChildGraph(QWidget):
             self.plt.setYRange(minY, maxY)
         self.plt.setXRange(start_pos, end_pos, padding=0)
 
-    def mouseMoved(self, pos):
-        vb = self.plt.viewRange()
-        print ('pos', pos)
-        print ('view rect', vb)
-        #print ('range', self.plt.range)
-        #print ('scene bouding rect', self.plt.sceneBoundingRect())
-        #print ('boudning rect', self.plt.boundingRect())
-
 class DateAxis(pg.AxisItem):
 
     def __init__(self, date_strings, orientation):
         pg.AxisItem.__init__(self,orientation)
         self.date_strings = date_strings
         self.len = len(self.date_strings)
+
     def tickStrings(self, values, scale, spacing):
         strns = []
         for x in values:

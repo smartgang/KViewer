@@ -77,29 +77,27 @@ class KViewer(QWidget):
         bar_type = int(self.setting_bar_type_cb.currentText())
         start_date = self.setting_start_date.date().toString("yyyy-MM-dd")
         end_date = self.setting_end_date.date().toString("yyyy-MM-dd")
-        self.setting_dic['excahnge'] = exchange
+        self.setting_dic['exchange'] = exchange
         self.setting_dic['symbol'] = symbol
         self.setting_dic['contract'] = contract
         self.setting_dic['period'] = bar_type
         self.setting_dic['start_date'] = start_date
         self.setting_dic['end_date'] = end_date
-        domain_symbol = '.'.join([exchange, symbol])
-        print (domain_symbol)
-        print (contract)
-        print ('getting data')
-        #self.raw_data = DI.getBarBySymbol(domain_symbol, contract, bar_type, start_date + ' 09:00:00', end_date + ' 15:00:00')
+        self.setup_child_graph()
+
+    def setup_child_graph(self):
+        domain_symbol = '.'.join([self.setting_dic['exchange'], self.setting_dic['symbol']])
+        # self.raw_data = DI.getBarBySymbol(domain_symbol, contract, bar_type, start_date + ' 09:00:00', end_date + ' 15:00:00')
         self.raw_data = pd.read_excel('RB1810_2018-06-19_1m.xlsx')
-        print ('rawdata', self.raw_data.shape[0])
         self.main_child_graph.set_raw_data(self.raw_data)
         self.second_child_graph.set_raw_data(self.raw_data)
         self.range_control_plt.plot(self.raw_data['close'], pen="w", name='close')
         self.main_child_graph.plt.setXLink(self.second_child_graph.plt)
         self.region.sigRegionChanged.connect(self.set_child_range)
-        print ('update_region')
         self.main_child_graph.plt.sigRangeChanged.connect(self.update_region)
-        print ('set region')
+        self.proxy = pg.SignalProxy(self.main_child_graph.plt.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
         self.region.setRegion([0, 100])
-        #self.main_child_graph.plt.setYLink(self.second_child_graph.plt)
+        # self.main_child_graph.plt.setYLink(self.second_child_graph.plt)
         pass
 
     def set_child_range(self):
@@ -111,6 +109,21 @@ class KViewer(QWidget):
         rgn = viewRange[0]
         self.region.setRegion(rgn)
 
+    def mouseMoved(self, event):
+        pos = event[0]  ## using signal proxy turns original arguments into a tuple
+        print ('pos', pos)
+        a = self.main_child_graph.plt.boundingRect().getRect()
+        print ('a', a)
+        minx, maxx = self.region.getRegion()
+        knum = maxx-minx
+        # (pos.x()-35）表示鼠标点距离左边框的位置
+        # (a[2]-35)/knum表示每一根K线占用的像素点数量
+        # 上面两者两除即为鼠标位置点的K线序号，+minx就是在整个数据列表中的位置
+        rx = int((pos.x()-35)/((a[2]-35)/knum)+minx)
+        index = rx
+        #if index > 0 and index < len(self.t):
+        self.main_child_graph.set_indexer_label(index)
+        self.second_child_graph.set_indexer_label(index)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
