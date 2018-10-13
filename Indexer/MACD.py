@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from IndexerBase import IndexerBase
-
+import pyqtgraph as pg
 
 class MACD(IndexerBase):
     indexer_name = 'MACD'
@@ -14,6 +14,7 @@ class MACD(IndexerBase):
     def __init__(self, raw_data, plt):
         super(MACD, self).__init__(raw_data, plt)
         self.indexer_name_list = ['DIF', 'DEA', 'HIST']  # MA的指标名和参数名都跟参数有关，所以要随参数进行设置
+        self.hist_item = None
 
     def calculate_indexer_value(self):
         closedata = self.raw_data['close']
@@ -33,14 +34,23 @@ class MACD(IndexerBase):
     def draw_indexer(self):
         i = 0
         for indexer_name, values in self.indexer_value_dic.items():
-            self.plt_dic[indexer_name] = self.plt.plot(name=indexer_name, pen=self.color_list[i])
-            self.plt_dic[indexer_name].setData(values)
+            if indexer_name == 'HIST':
+                self.hist_item = pg.BarGraphItem(x=range(0, len(values)), height=values, width=0.3, brush='r')
+                self.plt.addItem(self.hist_item)
+            else:
+                self.plt_dic[indexer_name] = self.plt.plot(name=indexer_name, pen=self.color_list[i])
+                self.plt_dic[indexer_name].setData(values)
             print (indexer_name)
             i += 1
 
     def re_draw_indexer(self):
         for pname, values in self.indexer_value_dic.items():
-            self.plt_dic[pname].setData(values)
+            if pname == 'HIST':
+                self.plt.removeItem(self.hist_item)
+                self.hist_item = pg.BarGraphItem(x=range(0, len(values)), height=values, width=0.3, brush='r')
+                self.plt.addItem(self.hist_item)
+            else:
+                self.plt_dic[pname].setData(values)
 
     def get_polar_value(self,start_pos, end_pos):
         max_v = max(max(self.indexer_value_dic['DIF'][start_pos:end_pos]),

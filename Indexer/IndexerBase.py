@@ -4,7 +4,8 @@
 """
 
 class IndexerBase(object):
-    color_list = ['w', 'y', 'c', 'r', 'g']
+    color_list = ['b', 'y', 'c', 'r', 'g']
+    font_color_list = ['blue', 'yellow', 'cyan', 'red', 'green']
     indexer_name = ''
     indexer_name_list = []
     default_para_dic = {}
@@ -34,6 +35,10 @@ class IndexerBase(object):
     def get_polar_value(self, start_pos, end_pos):
         pass
 
+    def close_sub_plt(self):
+        for plt in self.plt_dic.values():
+            plt.close()
+
     def set_para_dic(self,para_dic):
         for para_name in self.para_dic.keys():
             self.para_dic[para_name] = para_dic[para_name]
@@ -58,10 +63,10 @@ class IndexerBase(object):
 
     def get_indexer_value_text(self, pos):
         # 根据传入的位置返回一个指标值的字符串
-        t = ""
+        t = self.indexer_name + ': '
         i = 0
         for indexer_name in self.indexer_name_list:
-            c = self.color_list[i]
+            c = self.font_color_list[i]
             t += "<span style='color: %s'>%s=%0.3f </span>" % (c, indexer_name, self.indexer_value_dic[indexer_name][pos])
             i += 1
         return t
