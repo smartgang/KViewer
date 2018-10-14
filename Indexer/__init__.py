@@ -2,9 +2,17 @@
 from IndexerWidget import IndexerWidget
 from MA import MA
 from MACD import MACD
+from RSI import RSI
+from ATR import ATR
+from HullMacd import HULL_MACD
+
+
 indexer_mapping_dic = {
     'MA': MA,
-    'MACD': MACD
+    'MACD': MACD,
+    'HULL_MACD': HULL_MACD,
+    'RSI': RSI,
+    'ATR': ATR
 }
 
 def get_all_indexer_para_name():

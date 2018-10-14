@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from IndexerBase import IndexerBase
 import pyqtgraph as pg
+import numpy as np
+import talib
 
-class MACD(IndexerBase):
-    indexer_name = 'MACD'
+
+class HULL_MACD(IndexerBase):
+    indexer_name = 'HULL_MACD'
     indexer_name_list = ['DIF', 'DEA', 'HIST']  # MA的指标名和参数名都跟参数有关，所以要随参数进行设置
     default_para_dic = {
         'Short':12,
@@ -12,24 +15,32 @@ class MACD(IndexerBase):
     }
 
     def __init__(self, raw_data, plt):
-        super(MACD, self).__init__(raw_data, plt)
+        super(HULL_MACD, self).__init__(raw_data, plt)
         self.indexer_name_list = ['DIF', 'DEA', 'HIST']  # MA的指标名和参数名都跟参数有关，所以要随参数进行设置
         self.hist_item = None
 
     def calculate_indexer_value(self):
-        closedata = self.raw_data['close']
         short = self.para_dic['Short']
-        long1 = self.para_dic['Long']
+        long_v = self.para_dic['Long']
         mid = self.para_dic['Mid']
-        sema = closedata.ewm(span=short, adjust=False).mean()
-        lema = closedata.ewm(span=long1, adjust=False).mean()
+        closedata = np.array(self.raw_data['close'].values, dtype=float)
+        sema = self._hull_ma(closedata, short)
+        lema = self._hull_ma(closedata, long_v)
         data_dif = sema - lema
-        # data_dea = pd.ewma(data_dif, span=mid)
-        data_dea = data_dif.ewm(span=mid, adjust=False).mean()
-        data_bar = (data_dif - data_dea) * 2
+        data_dea = talib.MA(data_dif, mid, matype=1)
+        data_bar = 2 * (data_dif - data_dea)
         self.indexer_value_dic['DIF'] = data_dif.tolist()
         self.indexer_value_dic['DEA'] = data_dea.tolist()
         self.indexer_value_dic['HIST'] = data_bar.tolist()
+
+    def _hull_ma(self, close_array, n):
+        n = float(n)
+        n_2 = round(n / 2)
+        n_squr = round(np.sqrt(n))
+        wma1 = talib.MA(close_array, n, matype=2)
+        wma2 = talib.MA(close_array, n_2, matype=2)
+        x = wma2 * 2 - wma1
+        return talib.MA(x, n_squr, matype=2)
 
     def draw_indexer(self):
         i = 0

@@ -63,10 +63,13 @@ class IndexerBase(object):
 
     def get_indexer_value_text(self, pos):
         # 根据传入的位置返回一个指标值的字符串
-        t = self.indexer_name + ': '
+        t = self.indexer_name + '('
+        for para_name, para_value in self.para_dic.items():
+            t += '%s_%d ' % (para_name, para_value)
+        t += ')'
         i = 0
         for indexer_name in self.indexer_name_list:
             c = self.font_color_list[i]
-            t += "<span style='color: %s'>%s=%0.3f </span>" % (c, indexer_name, self.indexer_value_dic[indexer_name][pos])
+            t += "<span style='color: %s'>%s=%0.2f </span>" % (c, indexer_name, self.indexer_value_dic[indexer_name][pos])
             i += 1
         return t

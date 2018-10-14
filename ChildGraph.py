@@ -48,7 +48,6 @@ class ChildGraph(QWidget):
         return csitem, axis
 
     def _setup_plt(self):
-        print ('setup plt')
         if self.plt:
             self.plt.close()
         if not self.child:
@@ -59,14 +58,10 @@ class ChildGraph(QWidget):
             self.plt.showGrid(x=True, y=True)
         else:
             self.plt = pg.PlotWidget()
-            print ('plt')
             self.plt.showGrid(x=True, y=True)
         self.vLine = pg.InfiniteLine(angle=90, movable=False)
-        print ('vline')
         self.plt.addItem(self.vLine)
-        print ('add vline')
         self.frame_layout.addWidget(self.plt)
-        print ('add widget')
 
     def header_layout(self):
         hbox = QHBoxLayout(self)
@@ -112,13 +107,8 @@ class ChildGraph(QWidget):
             self.indexer_class.update_parameter(para_dic[selected_indexer])
         else:
             # 所选指标与已有指标不同，则加载新指标
-            print ('indexer name', self.indexer_name)
-            print ('selected name', selected_indexer)
             if self.indexer_class:
-                # self._setup_plt()
-                # self.indexer_class.close_sub_plt()
                 self.plt.clear()
-                print ('close sub plt')
             indexer_class = indexer_mapping_dic[selected_indexer](self.raw_data, self.plt)
             indexer_class.set_para_dic(para_dic[selected_indexer])
             indexer_class.calculate_indexer_value()
