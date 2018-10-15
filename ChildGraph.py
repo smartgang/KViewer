@@ -9,6 +9,9 @@ import pandas as pd
 
 
 class ChildGraph(QWidget):
+
+    main_child_plt_changed = pyqtSignal(name='main_child_plt_changed')
+
     def __init__(self, child=True):
         super(ChildGraph, self).__init__()
         self.child = child
@@ -56,6 +59,7 @@ class ChildGraph(QWidget):
             self.plt = pg.PlotWidget(axisItems={'bottom': axis})
             self.plt.addItem(item, )
             self.plt.showGrid(x=True, y=True)
+            self.main_child_plt_changed.emit()
         else:
             self.plt = pg.PlotWidget()
             self.plt.showGrid(x=True, y=True)
@@ -73,6 +77,8 @@ class ChildGraph(QWidget):
     def set_indexer_label(self, xpos):
         # 设置指标标签的值，同时更新竖线位置
         if self.indexer_class:
+            if xpos >= self.indexer_class.value_num:
+                return
             value_str = self.indexer_class.get_indexer_value_text(xpos)
             if not self.child:
                 # 主图要加上ohlc数据
@@ -108,7 +114,8 @@ class ChildGraph(QWidget):
         else:
             # 所选指标与已有指标不同，则加载新指标
             if self.indexer_class:
-                self.plt.clear()
+                #self.plt.clear()
+                self._setup_plt()
             indexer_class = indexer_mapping_dic[selected_indexer](self.raw_data, self.plt)
             indexer_class.set_para_dic(para_dic[selected_indexer])
             indexer_class.calculate_indexer_value()

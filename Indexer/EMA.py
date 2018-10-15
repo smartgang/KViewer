@@ -2,8 +2,8 @@
 from IndexerBase import IndexerBase
 
 
-class MA(IndexerBase):
-    indexer_name = 'MA'
+class EMA(IndexerBase):
+    indexer_name = 'EMA'
     indexer_name_list = []  # MA的指标名和参数名都跟参数有关，所以要随参数进行设置
     default_para_dic = {
         'N1': 5,
@@ -16,8 +16,8 @@ class MA(IndexerBase):
     def __init__(self, raw_data, plt):
         self.indexer_name_list = []
         for para_name, value in self.default_para_dic.items():
-            self.indexer_name_list.append("MA%d"%value)
-        super(MA,self).__init__(raw_data, plt)
+            self.indexer_name_list.append("EMA%d"%value)
+        super(EMA,self).__init__(raw_data, plt)
         self.indexer_color_dic = {
             'N1': 'blue',
             'N2': 'magenta',
@@ -32,14 +32,14 @@ class MA(IndexerBase):
         self.indexer_name_list = []
         self.indexer_value_dic = {}
         for para_name, para_value, in self.para_dic.items():
-            indexer_name = "MA%d" % para_value
+            indexer_name = "EMA%d" % para_value
             self.indexer_name_list.append(indexer_name)
-            self.indexer_value_dic[indexer_name] = self.raw_data['close'].rolling(para_value).mean().tolist()
+            self.indexer_value_dic[indexer_name] = self.raw_data['close'].ewm(span=para_value, adjust=False).mean().tolist()
 
     def draw_indexer(self):
         i = 0
         for pname, values in self.para_dic.items():
-            indexer_name = "MA%d" % values
+            indexer_name = "EMA%d" % values
             c = self.indexer_color_dic[pname][0]
             self.plt_dic[pname] = self.plt.plot(name=pname, pen=c)
             self.plt_dic[pname].setData(self.indexer_value_dic[indexer_name])
@@ -47,7 +47,7 @@ class MA(IndexerBase):
 
     def re_draw_indexer(self):
         for pname, values in self.para_dic.items():
-            indexer_name = "MA%d" % values
+            indexer_name = "EMA%d" % values
             self.plt_dic[pname].setData(self.indexer_value_dic[indexer_name])
 
     def get_polar_value(self,start_pos, end_pos):
@@ -66,7 +66,7 @@ class MA(IndexerBase):
         t += ')'
         i = 0
         for para_name, para_value in self.para_dic.items():
-            indexer_name = 'MA%d'%para_value
+            indexer_name = 'EMA%d'%para_value
             c = self.indexer_color_dic[para_name]
             t += "<span style='color: %s'>%s=%0.2f </span>" % (c, indexer_name, self.indexer_value_dic[indexer_name][pos])
             i += 1

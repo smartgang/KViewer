@@ -12,6 +12,10 @@ class ATR(IndexerBase):
     def __init__(self, raw_data, plt):
         super(ATR, self).__init__(raw_data, plt)
         self.indexer_name_list = ['ATR', 'TR']  # MA的指标名和参数名都跟参数有关，所以要随参数进行设置
+        self.indexer_color_dic = {
+            'ATR': 'blue',
+            'TR': 'magenta'
+        }
 
     def calculate_indexer_value(self):
         n = self.para_dic['N']

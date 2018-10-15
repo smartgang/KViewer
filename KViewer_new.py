@@ -36,6 +36,7 @@ class KViewer(QWidget):
         self.setup_ui()
         self.setup_range_control_view()
         self.main_child_graph = ChildGraph(False)
+        self.main_child_graph.main_child_plt_changed.connect(self.main_child_plt_changed)
         self.child_graph_list = []
         second_child_graph = ChildGraph(True)
         self.child_graph_list.append(second_child_graph)
@@ -104,8 +105,6 @@ class KViewer(QWidget):
             second_child_graph.set_raw_data(self.raw_data)
         self.range_control_plt.plot(self.raw_data['close'], pen="w", name='close')
         self.region.sigRegionChanged.connect(self.set_child_range)
-        self.main_child_graph.plt.sigRangeChanged.connect(self.update_region)
-        self.proxy = pg.SignalProxy(self.main_child_graph.plt.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
         self.region.setRegion([0, 100])
         pass
 
@@ -120,6 +119,10 @@ class KViewer(QWidget):
         rgn = viewRange[0]
         self.region.setRegion(rgn)
         self.region_minx, self.region_maxx = self.region.getRegion()
+
+    def main_child_plt_changed(self):
+        self.main_child_graph.plt.sigRangeChanged.connect(self.update_region)
+        self.proxy = pg.SignalProxy(self.main_child_graph.plt.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
 
     def mouseMoved(self, event):
         pos = event[0]  ## using signal proxy turns original arguments into a tuple

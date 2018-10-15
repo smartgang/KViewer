@@ -4,12 +4,12 @@
 """
 
 class IndexerBase(object):
-    color_list = ['b', 'y', 'c', 'r', 'g']
-    font_color_list = ['blue', 'yellow', 'cyan', 'red', 'green']
+    color_list = ['blue', 'magenta', 'cyan', 'red', 'green']
     indexer_name = ''
     indexer_name_list = []
     default_para_dic = {}
     para_dic = {}
+    indexer_color_dic = {}  # 各指标对应的显示颜色
 
     def __init__(self, raw_data, plt):
         self.raw_data = raw_data
@@ -19,6 +19,7 @@ class IndexerBase(object):
         self.indexer_value_dic = {}
         self.plt = plt
         self.plt_dic = {}
+        self.value_num = self.raw_data.shape[0]
         #self.calculate_indexer_value()
         #self.draw_indexer()
         pass
@@ -68,8 +69,7 @@ class IndexerBase(object):
             t += '%s_%d ' % (para_name, para_value)
         t += ')'
         i = 0
-        for indexer_name in self.indexer_name_list:
-            c = self.font_color_list[i]
-            t += "<span style='color: %s'>%s=%0.2f </span>" % (c, indexer_name, self.indexer_value_dic[indexer_name][pos])
+        for para_name, c in self.indexer_color_dic.items():
+            t += "<span style='color: %s'>%s=%0.2f </span>" % (c, para_name, self.indexer_value_dic[para_name][pos])
             i += 1
         return t

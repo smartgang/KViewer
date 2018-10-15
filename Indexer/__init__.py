@@ -5,10 +5,12 @@ from MACD import MACD
 from RSI import RSI
 from ATR import ATR
 from HullMacd import HULL_MACD
+from EMA import EMA
 
 
 indexer_mapping_dic = {
     'MA': MA,
+    'EMA': EMA,
     'MACD': MACD,
     'HULL_MACD': HULL_MACD,
     'RSI': RSI,

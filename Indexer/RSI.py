@@ -14,6 +14,9 @@ class RSI(IndexerBase):
     def __init__(self, raw_data, plt):
         super(RSI, self).__init__(raw_data, plt)
         self.indexer_name_list = ['RSI']  # MA的指标名和参数名都跟参数有关，所以要随参数进行设置
+        self.indexer_color_dic = {
+            'RSI': 'blue'
+        }
 
     def calculate_indexer_value(self):
         n = self.para_dic['N']
