@@ -6,7 +6,9 @@ from RSI import RSI
 from ATR import ATR
 from HullMacd import HULL_MACD
 from EMA import EMA
-
+from HullRsi import HULL_RSI
+from KDJ import KDJ
+from DMI import DMI
 
 indexer_mapping_dic = {
     'MA': MA,
@@ -14,7 +16,10 @@ indexer_mapping_dic = {
     'MACD': MACD,
     'HULL_MACD': HULL_MACD,
     'RSI': RSI,
-    'ATR': ATR
+    'ATR': ATR,
+    'HULL_RSI': HULL_RSI,
+    'KDJ': KDJ,
+    'DMI': DMI
 }
 
 def get_all_indexer_para_name():
