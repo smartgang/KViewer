@@ -26,7 +26,8 @@ class RSI(IndexerBase):
     def draw_indexer(self):
         i = 0
         for indexer_name, values in self.indexer_value_dic.items():
-            self.plt_dic[indexer_name] = self.plt.plot(name=indexer_name, pen=self.color_list[i])
+            c = self.indexer_color_dic[indexer_name][0]
+            self.plt_dic[indexer_name] = self.plt.plot(name=indexer_name, pen=c)
             self.plt_dic[indexer_name].setData(values)
             i += 1
 
