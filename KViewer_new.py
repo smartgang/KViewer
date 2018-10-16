@@ -98,8 +98,12 @@ class KViewer(QWidget):
 
     def setup_child_graph(self):
         domain_symbol = '.'.join([self.setting_dic['exchange'], self.setting_dic['symbol']])
-        # self.raw_data = DI.getBarBySymbol(domain_symbol, contract, bar_type, start_date + ' 09:00:00', end_date + ' 15:00:00')
-        self.raw_data = pd.read_excel('RB1810_2018-06-19_1m.xlsx')
+        contract = self.setting_dic['contract']
+        bar_type = self.setting_dic['period']
+        start_date = self.setting_dic['start_date']
+        end_date = self.setting_dic['end_date']
+        self.raw_data = DI.getBarBySymbol(domain_symbol, contract, bar_type, start_date + ' 09:00:00', end_date + ' 15:00:00')
+        #self.raw_data = pd.read_excel('RB1810_2018-06-19_1m.xlsx')
         self.main_child_graph.set_raw_data(self.raw_data)
         for second_child_graph in self.child_graph_list:
             second_child_graph.set_raw_data(self.raw_data)
