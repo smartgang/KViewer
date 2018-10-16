@@ -9,7 +9,7 @@ class IndexerWidget(QWidget):
 
     signal_para_changed = pyqtSignal(str,dict, name='para_changed')
 
-    def __init__(self, all_indexer_para_dic):
+    def __init__(self, all_indexer_para_dic, current_indexer_name):
         super(IndexerWidget,self).__init__()
         #self.setGeometry(300,50,10,10)
         self.setWindowTitle('设置指标参数')
@@ -17,8 +17,9 @@ class IndexerWidget(QWidget):
         self.leftlist = QListWidget()
         self.para_line_edit_dic = {}
         self.stack_dic = {}
-
+        self.indexer_pos_dic = {}   #  记录各个指标在leftlist中的位置
         i = 0
+        current_indexer_pos = 0
         self.stack = QStackedWidget(self)
         for indexer_name in self.indexer_para_dic.keys():
             self.leftlist.insertItem(i, indexer_name)
@@ -37,6 +38,8 @@ class IndexerWidget(QWidget):
             stack_widget.setLayout(layout)
             self.stack_dic[indexer_name] = stack_widget
             self.stack.addWidget(stack_widget)
+            if indexer_name == current_indexer_name:
+                current_indexer_pos = i
             i += 1
         main_box = QVBoxLayout(self)
         hbox  = QHBoxLayout(self)
@@ -48,7 +51,8 @@ class IndexerWidget(QWidget):
         main_box.addLayout(btn_layout)
         self.setLayout(btn_layout)
         self.leftlist.currentRowChanged.connect(self.display)
-        self.leftlist.setCurrentRow(0)
+        self.leftlist.setCurrentRow(current_indexer_pos)
+
     def setup_button(self):
         vbox = QHBoxLayout(self)
         btn_ok = QPushButton('OK')

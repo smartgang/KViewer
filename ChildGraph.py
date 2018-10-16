@@ -100,9 +100,11 @@ class ChildGraph(QWidget):
         # 用户设置指标参数接口，弹出指标设置对话框供用户设置
         # 已设置的指标加载已有参数，其余指标均加载默认参数
         all_indexer_para_dic = get_all_indexer_para_dic()
+        current_indexer_name = 'MA'
         if self.indexer_class:
             all_indexer_para_dic[self.indexer_name] = self.indexer_class.get_para_dic()
-        self.indexer_widget = IndexerWidget(all_indexer_para_dic)
+            current_indexer_name = self.indexer_class.indexer_name
+        self.indexer_widget = IndexerWidget(all_indexer_para_dic, current_indexer_name)
         self.indexer_widget.signal_para_changed.connect(self.indexer_parameter_changed)
         self.indexer_widget.show()
 
