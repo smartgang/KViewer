@@ -128,8 +128,11 @@ class ChildGraph(QWidget):
     def update_visual_range(self, start_pos, end_pos):
         if self.plt and self.indexer_class:
             # Y轴自适应
+            value_n = self.indexer_class.value_num
             start_pos = max(0, start_pos)
+            start_pos = min(start_pos, value_n)
             end_pos = max(1, end_pos)
+            end_pos = min(end_pos, value_n)
             if not self.child:
                 minY = min(self.low_list[start_pos:end_pos])
                 maxY = max(self.high_list[start_pos:end_pos])
